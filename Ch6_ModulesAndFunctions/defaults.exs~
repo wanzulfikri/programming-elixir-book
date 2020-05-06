@@ -1,0 +1,4 @@
+defmodule Defaults do
+  def foo(true, b \\ :default), do: b
+  def foo(false, b), do: b
+end
