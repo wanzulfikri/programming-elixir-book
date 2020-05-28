@@ -1,4 +1,5 @@
 defmodule Issues.CLI do
+  import Issues.TableFormatter, only: [print_table_for_columns: 2]
   @default_count 4
 
   @moduledoc """
@@ -53,7 +54,10 @@ defmodule Issues.CLI do
     |> decode_response()
     |> sort_into_descending_order()
     |> last(count)
-    |> format
+    |> print_table_for_columns(["number", "created_at", "title"])
+
+    # pipe to format/1 to use my table format implementation
+    # |> format
   end
 
   @doc """
