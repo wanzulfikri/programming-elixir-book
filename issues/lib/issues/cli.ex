@@ -75,20 +75,40 @@ defmodule Issues.CLI do
   end
 
   defp formatAll({issues, cols_lengths}) do
+    printHeader(cols_lengths)
     Enum.map(issues, &printLine(&1, cols_lengths))
   end
 
-  defp printLine(
-         %{"number" => number, "created_at" => created_at, "title" => title} = issue,
-         %{number: number_length, created_at: created_at_length, title: title_length} =
-           cols_lengths
-       )
-       when is_map(issue) and is_map(cols_lengths) do
-    stringNumber = Integer.to_string(number)
+  defp printHeader(cols_lengths) do
+    printLine(["#", "created_at", "title"], cols_lengths)
+    printLine(["", "", ""], cols_lengths, "+", "-")
+  end
 
-    IO.write("#{String.pad_trailing(stringNumber, number_length)} | ")
-    IO.write("#{String.pad_trailing(created_at, created_at_length)} | ")
-    IO.write("#{String.pad_trailing(title, title_length)}")
+  defp printLine(issue, cols_lengths, divider \\ "|", padding \\ " ")
+
+  defp printLine(
+         %{"number" => number, "created_at" => created_at, "title" => title},
+         cols_lengths,
+         divider,
+         padding
+       ) do
+    number = Integer.to_string(number)
+    printLine([number, created_at, title], cols_lengths, divider, padding)
+  end
+
+  defp printLine(
+         [first, second, third],
+         %{
+           number: number_length,
+           created_at: created_at_length,
+           title: title_length
+         },
+         divider,
+         padding
+       ) do
+    IO.write("#{String.pad_trailing(first, number_length, padding)} #{divider} ")
+    IO.write("#{String.pad_trailing(second, created_at_length, padding)} #{divider} ")
+    IO.write("#{String.pad_trailing(third, title_length, padding)}")
     IO.puts("")
   end
 
